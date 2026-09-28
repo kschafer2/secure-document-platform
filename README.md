@@ -25,7 +25,7 @@ The project is intentionally being built in stages. Each milestone introduces a 
 - [Engineering Principles](#engineering-principles)
 - [Testing Strategy](#testing-strategy)
 - [Long-Term Direction](#long-term-direction)
-- [Local Development](#local-development)
+- [Local Development Setup](#local-development-setup)
 
 ---
 
@@ -325,7 +325,7 @@ GET    /documents/{documentId}/content
 DELETE /documents/{documentId}
 ```
 
-Detailed request and response behavior is documented in [`docs/api.md`](docs/api.md).
+Detailed request and response behavior is documented in [`api.md`](docs/milestone-1/api.md).
 
 ---
 
@@ -349,7 +349,7 @@ Document
 
 Persistence, validation, MIME inspection, ID generation, and object storage remain focused collaborators rather than being embedded directly into the HTTP layer.
 
-Detailed contracts are documented in [`docs/component-contracts.md`](docs/component-contracts.md).
+Detailed contracts are documented in [`component-contracts.md`](docs/milestone-1/component-contracts.md).
 
 ---
 
@@ -366,7 +366,7 @@ PostgreSQL stores document metadata such as:
 - content type
 - upload timestamp
 
-See [`docs/data-model.md`](docs/data-model.md).
+See [`data-model.md`](docs/milestone-1/data-model.md).
 
 ## Object Storage
 
@@ -388,7 +388,7 @@ Current flow documentation includes:
 - accepted temporary inconsistency
 - duplicate-filename race behavior
 
-See [`docs/data-flows.md`](docs/data-flows.md).
+See [`data-flows.md`](docs/milestone-1/data-flows.md).
 
 ---
 
@@ -398,9 +398,9 @@ Important architectural choices are recorded as Architecture Decision Records (A
 
 Current decisions include:
 
-- [`ADR 0001 — Use UUIDv7 for Document IDs`](docs/decisions/0001-use-uuidv7-for-document-ids.md)
-- [`ADR 0002 — Store File Bytes in Object Storage`](docs/decisions/0002-store-files-in-object-storage.md)
-- [`ADR 0003 — Proxy File Transfers Through the API in Milestone 1`](docs/decisions/0003-proxy-file-transfers-through-api.md)
+- [`ADR 0001 — Use UUIDv7 for Document IDs`](docs/milestone-1/0001-use-uuidv7-for-document-ids.md)
+- [`ADR 0002 — Store File Bytes in Object Storage`](docs/milestone-1/0002-store-files-in-object-storage.md)
+- [`ADR 0003 — Proxy File Transfers Through the API in Milestone 1`](docs/milestone-1/0003-proxy-file-transfers-through-api.md)
 
 Later milestones may intentionally replace some early decisions as the system's requirements change.
 

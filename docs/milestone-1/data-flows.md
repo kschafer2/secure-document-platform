@@ -13,15 +13,6 @@ It focuses on:
 - compensation behavior
 - accepted consistency tradeoffs
 
-It intentionally does not duplicate:
-
-- HTTP request/response contracts — see `api.md`
-- database schema and constraints — see `data-model.md`
-- component responsibilities and interfaces — see `component-contracts.md`
-- architectural decisions and rationale — see `docs/decisions/`
-
-This document should be updated as each Milestone 1 data flow is designed.
-
 ---
 
 ## Data Flow Index
