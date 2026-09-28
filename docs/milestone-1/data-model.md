@@ -1,3 +1,11 @@
+# Secure Document Platform — Milestone 1 Data Model
+
+## Purpose
+
+This document records the Milestone 1 data model. Only one table, `document`, is defined for the milestone.
+
+---
+
 ## Document Table
 
 The `document` table stores metadata for each uploaded document. The actual file contents are stored separately in object storage.

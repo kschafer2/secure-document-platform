@@ -4,16 +4,6 @@
 
 This document defines the responsibilities and interaction contracts between the main Milestone 1 application components.
 
-It intentionally does **not** repeat:
-
-- HTTP endpoint definitions or response semantics — see `api.md`
-- database columns, constraints, indexes, MIME allowlist, or file-size limits — see `data-model.md`
-- the UUIDv7 decision — see `decisions/0001-use-uuidv7-for-document-ids.md`
-- the object-storage decision — see `decisions/0002-store-files-in-object-storage.md`
-- the decision to proxy uploads/downloads through the API — see `decisions/0003-proxy-file-transfers-through-api.md`
-
-The focus here is strictly on **component responsibilities and contracts**.
-
 ---
 
 ## Request / Response Handler
@@ -136,7 +126,7 @@ validateFileName(fileName)
 validateFileSize(fileSizeBytes)
 ```
 
-Validation rules and limits are defined in `data-model.md` rather than duplicated here.
+Validation rules and limits are defined in [`data-model.md`](data-model.md) rather than duplicated here.
 
 `fileSizeBytes` is the actual parsed file-part size supplied to the application. `DocumentValidator` does not treat the overall HTTP `Content-Length` as the document size.
 
@@ -171,7 +161,7 @@ The server-detected canonical MIME type is authoritative. A mismatch with the cl
 
 Unsupported or unidentifiable content is rejected by the upload workflow as `UNSUPPORTED_FILE_TYPE`.
 
-Allowed MIME types are defined in `data-model.md`.
+Allowed MIME types are defined in [`data-model.md`](data-model.md).
 
 ---
 
@@ -189,7 +179,7 @@ generate() -> documentId
 
 Existing documents loaded from persistence retain their stored ID; reconstruction does not generate a new one.
 
-The UUID strategy itself is documented in ADR 0001.
+The UUID strategy itself is documented in [ADR 0001](0001-use-uuidv7-for-document-ids.md).
 
 ---
 
@@ -279,7 +269,7 @@ is idempotent from the application's perspective: an already-absent object is an
 
 The document model represents document metadata.
 
-Its exact persisted fields and constraints are defined in `data-model.md`.
+Its exact persisted fields and constraints are defined in [`data-model.md`](data-model.md).
 
 The model does not:
 
