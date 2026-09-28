@@ -6,6 +6,29 @@ The project is intentionally being built in stages. Each milestone introduces a 
 
 ---
 
+## Table of Contents
+
+- [Project Goals](#project-goals)
+- [Current Status](#current-status)
+- [Milestone Roadmap](#milestone-roadmap)
+    - [Milestone 1 — Core Document Service](#milestone-1--core-document-service)
+    - [Milestone 2 — Database and Concurrency Depth](#milestone-2--database-and-concurrency-depth)
+    - [Milestone 3 — Asynchronous Processing and Reliable Messaging](#milestone-3--asynchronous-processing-and-reliable-messaging)
+    - [Milestone 4 — Networking, Containers, and Observability](#milestone-4--networking-containers-and-observability)
+    - [Milestone 5 — Resilience Under Dependency Failure](#milestone-5--resilience-under-dependency-failure)
+    - [Milestone 6 — AWS Deployment](#milestone-6--aws-deployment)
+- [Milestone 1 API](#milestone-1-api)
+- [Milestone 1 Component Model](#milestone-1-component-model)
+- [Data Storage](#data-storage)
+- [Data Flows](#data-flows)
+- [Architecture Decisions](#architecture-decisions)
+- [Engineering Principles](#engineering-principles)
+- [Testing Strategy](#testing-strategy)
+- [Long-Term Direction](#long-term-direction)
+- [Local Development](#local-development)
+
+---
+
 ## Project Goals
 
 The goal is not simply to build a file-upload API.
@@ -462,3 +485,89 @@ cloud deployment
 ```
 
 The result should be a system whose architecture can be explained in terms of concrete requirements and tradeoffs rather than a collection of technologies added for their own sake.
+
+---
+
+## Local Development Setup
+
+### Prerequisites
+
+- Java 25
+- Docker with Docker Compose
+
+Maven does not need to be installed separately because the project includes the Maven Wrapper.
+
+### Configure Local Environment
+
+Create a local environment file from the committed example:
+
+```bash
+cp .env.example .env
+```
+
+The `.env` file contains local development credentials and is excluded from Git.
+
+### Start Local Infrastructure
+
+Start PostgreSQL and SeaweedFS:
+
+```bash
+docker compose up -d
+```
+
+Verify that the containers are running:
+
+```bash
+docker compose ps
+```
+
+The local services are available at:
+
+| Service | Address |
+|---|---|
+| PostgreSQL | `localhost:5432` |
+| SeaweedFS S3 API | `http://localhost:8333` |
+
+At this stage of the project, the Spring Boot application does not yet connect to PostgreSQL or SeaweedFS. Issue #2 establishes the application and its local infrastructure independently; application integration is added in later issues.
+
+### Build and Test
+
+Run the project tests:
+
+```bash
+./mvnw test
+```
+
+### Run the Application
+
+Start the Spring Boot application:
+
+```bash
+./mvnw spring-boot:run
+```
+
+The application starts on:
+
+```text
+http://localhost:8080
+```
+
+Stop the application with `Ctrl+C`.
+
+### Stop Local Infrastructure
+
+Stop and remove the local containers:
+
+```bash
+docker compose down
+```
+
+Named volumes are preserved, so PostgreSQL and SeaweedFS data survive container recreation.
+
+To completely reset the local infrastructure, including all persisted PostgreSQL and SeaweedFS data:
+
+```bash
+docker compose down -v
+```
+
+This command permanently deletes the project's local Docker volumes.
