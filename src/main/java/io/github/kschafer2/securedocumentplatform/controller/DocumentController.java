@@ -32,13 +32,21 @@ public class DocumentController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DocumentMetadata>> listDocuments() {
         log.info("listDocuments: I've been hit!");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(List.of());
     }
 
     @GetMapping(path = "/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DocumentMetadata> getDocumentMetadata(@PathVariable UUID documentId) {
         log.info("getDocumentMetadata: I've been hit!\nDocumentId: {}", documentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(
+                new DocumentMetadata(
+                        documentId,
+                        null,
+                        0L,
+                        null,
+                        null
+                )
+        );
     }
 
     @GetMapping(path = "/{documentId}/content")
