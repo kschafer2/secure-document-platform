@@ -1,0 +1,16 @@
+test:
+  docker:
+    postgres-image: postgres:18.6
+  jwt:
+    private-key-location: classpath:auth/test-private-key.pem
+    invalid-private-key-location: classpath:auth/test-invalid-private-key.pem
+    invalid-public-key-location: classpath:auth/test-invalid-public-key.pem
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:auth/test-public-key.pem
+          audiences:
+            - secure-document-platform
