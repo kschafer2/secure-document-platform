@@ -11,12 +11,12 @@ The project is intentionally being built in stages. Each milestone introduces a 
 - [Project Goals](#project-goals)
 - [Current Status](#current-status)
 - [Milestone Roadmap](#milestone-roadmap)
-    - [Milestone 1 — Core Document Service](#milestone-1--core-document-service)
-    - [Milestone 2 — Database and Concurrency Depth](#milestone-2--database-and-concurrency-depth)
-    - [Milestone 3 — Asynchronous Processing and Reliable Messaging](#milestone-3--asynchronous-processing-and-reliable-messaging)
-    - [Milestone 4 — Networking, Containers, and Observability](#milestone-4--networking-containers-and-observability)
-    - [Milestone 5 — Resilience Under Dependency Failure](#milestone-5--resilience-under-dependency-failure)
-    - [Milestone 6 — AWS Deployment](#milestone-6--aws-deployment)
+  - [Milestone 1 — Core Document Service](#milestone-1--core-document-service)
+  - [Milestone 2 — Database and Concurrency Depth](#milestone-2--database-and-concurrency-depth)
+  - [Milestone 3 — Asynchronous Processing and Reliable Messaging](#milestone-3--asynchronous-processing-and-reliable-messaging)
+  - [Milestone 4 — Networking, Containers, and Observability](#milestone-4--networking-containers-and-observability)
+  - [Milestone 5 — Resilience Under Dependency Failure](#milestone-5--resilience-under-dependency-failure)
+  - [Milestone 6 — AWS Deployment](#milestone-6--aws-deployment)
 - [Milestone 1 API](#milestone-1-api)
 - [Milestone 1 Component Model](#milestone-1-component-model)
 - [Data Storage](#data-storage)
@@ -494,6 +494,9 @@ The result should be a system whose architecture can be explained in terms of co
 
 - Java 25
 - Docker with Docker Compose
+- Bash
+- Python 3
+- OpenSSL
 
 Maven does not need to be installed separately because the project includes the Maven Wrapper.
 
@@ -553,6 +556,93 @@ http://localhost:8080
 ```
 
 Stop the application with `Ctrl+C`.
+
+### Generate a Local Development JWT
+
+The document API is protected by JWT authentication. For local development, generate a valid RS256 token with the repository's development-only key:
+
+```bash
+./scripts/generate-dev-jwt.sh <subject> [lifetime-seconds]
+```
+
+`subject` becomes the authenticated user identity. The optional token lifetime defaults to `3600` seconds. Generated tokens include the expected `sub`, `aud`, `iat`, and `exp` claims for the local resource server.
+
+For example:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $(./scripts/generate-dev-jwt.sh kyle)" \
+  http://localhost:8080/documents
+```
+
+The development private key is intentionally committed for local use and must be treated as public test material. Any environment that trusts the corresponding public key is therefore development-only; never reuse this key pair for a deployed environment or real data.
+
+### Example API Requests
+
+For manual smoke testing, define the local base URL and generate a development token once:
+
+```bash
+BASE_URL="http://localhost:8080"
+TOKEN="$(./scripts/generate-dev-jwt.sh kyle)"
+```
+
+List documents:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $TOKEN" \
+  "$BASE_URL/documents"
+```
+
+Upload a document:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "file=@./dev/examples/example.txt" \
+  "$BASE_URL/documents"
+```
+
+For document-specific requests, set the document ID returned by the API:
+
+```bash
+DOCUMENT_ID="<document-id>"
+```
+
+Retrieve document metadata:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $TOKEN" \
+  "$BASE_URL/documents/$DOCUMENT_ID"
+```
+
+Download document content:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $TOKEN" \
+  "$BASE_URL/documents/$DOCUMENT_ID/content"
+```
+
+Delete a document:
+
+```bash
+curl -i \
+  -X DELETE \
+  -H "Authorization: Bearer $TOKEN" \
+  "$BASE_URL/documents/$DOCUMENT_ID"
+```
+
+Verify that authentication is required:
+
+```bash
+curl -i "$BASE_URL/documents"
+```
+
+The unauthenticated request should return `401 Unauthorized`.
+
+These commands are intended as convenient manual smoke tests. They do not replace the project's automated test suite.
 
 ### Stop Local Infrastructure
 

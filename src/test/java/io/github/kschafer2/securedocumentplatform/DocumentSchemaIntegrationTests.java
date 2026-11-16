@@ -9,27 +9,23 @@ import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 
-@Testcontainers
 @SpringBootTest
+@Import(TestConfig.class)
+@ActiveProfiles("test")
 class DocumentSchemaIntegrationTests {
 
     public record DocumentRow(
@@ -41,14 +37,11 @@ class DocumentSchemaIntegrationTests {
             OffsetDateTime uploadedAt
     ) {}
 
-    private static final String postgresImage = loadPostgresImage();
-
     @Autowired
     private DataSource dataSource;
 
-    @ServiceConnection
-    @Container
-    private static final PostgreSQLContainer postgresqlContainer = new PostgreSQLContainer(postgresImage);
+    @MockitoBean
+    JwtDecoder jwtDecoder;
 
     @AfterEach
     void cleanDatabase() throws SQLException {
@@ -527,26 +520,5 @@ class DocumentSchemaIntegrationTests {
             rowsInserted = statement.executeUpdate();
         }
         return rowsInserted;
-    }
-
-    private static String loadPostgresImage() {
-        Properties properties = new Properties();
-
-        try (InputStream input =
-                     Files.newInputStream(Path.of(".env.example"))) {
-            properties.load(input);
-        } catch (IOException e) {
-            throw new IllegalStateException(
-                    "Unable to load .env.example", e);
-        }
-
-        String image = properties.getProperty("POSTGRES_IMAGE");
-
-        if (image == null || image.isBlank()) {
-            throw new IllegalStateException(
-                    "POSTGRES_IMAGE is missing from .env.example");
-        }
-
-        return image;
     }
 }

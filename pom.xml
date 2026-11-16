@@ -28,8 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>25</java.version>
-		<tomcat.version>11.0.26</tomcat.version>
 		<argLine></argLine>
+        <jackson-bom.version>3.1.8</jackson-bom.version>
+        <logback.version>1.6.7</logback.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -52,6 +53,11 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 
 		<dependency>
@@ -83,11 +89,16 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
+<build>
+	<plugins>
+	<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>

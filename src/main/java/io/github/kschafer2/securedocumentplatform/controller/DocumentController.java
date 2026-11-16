@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +20,8 @@ public class DocumentController {
     private static final Logger log = LoggerFactory.getLogger(DocumentController.class);
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> uploadDocument(@RequestPart("file") MultipartFile file) {
-        log.info("uploadDocument: I've been hit!\nIncoming file: {}", file.getOriginalFilename());
+    public ResponseEntity<Void> uploadDocument(Principal auth, @RequestPart("file") MultipartFile file) {
+        log.info("uploadDocument: I've been hit by {}!\nIncoming file: {}", auth.getName(), file.getOriginalFilename());
         UUID documentId = UUID.randomUUID(); //todo: will be updated; stand in for returning path, for now
         return ResponseEntity.created(
                 UriComponentsBuilder.fromPath("/documents/{documentId}")
@@ -30,14 +31,14 @@ public class DocumentController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DocumentMetadata>> listDocuments() {
-        log.info("listDocuments: I've been hit!");
+    public ResponseEntity<List<DocumentMetadata>> listDocuments(Principal auth) {
+        log.info("listDocuments: I've been hit by {}!", auth.getName());
         return ResponseEntity.ok(List.of());
     }
 
     @GetMapping(path = "/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DocumentMetadata> getDocumentMetadata(@PathVariable UUID documentId) {
-        log.info("getDocumentMetadata: I've been hit!\nDocumentId: {}", documentId);
+    public ResponseEntity<DocumentMetadata> getDocumentMetadata(Principal auth, @PathVariable UUID documentId) {
+        log.info("getDocumentMetadata: I've been hit by {}!\nDocumentId: {}", auth.getName(), documentId);
         return ResponseEntity.ok(
                 new DocumentMetadata(
                         documentId,
@@ -50,14 +51,14 @@ public class DocumentController {
     }
 
     @GetMapping(path = "/{documentId}/content")
-    public ResponseEntity<?> downloadDocumentContent(@PathVariable UUID documentId) {
-        log.info("downloadDocumentContent: I've been hit!\nDocumentId: {}", documentId);
+    public ResponseEntity<?> downloadDocumentContent(Principal auth, @PathVariable UUID documentId) {
+        log.info("downloadDocumentContent: I've been hit by {}!\nDocumentId: {}",auth.getName(), documentId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/{documentId}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable UUID documentId) {
-        log.info("deleteDocument: I've been hit!\nDocumentId: {}", documentId);
+    public ResponseEntity<Void> deleteDocument(Principal auth, @PathVariable UUID documentId) {
+        log.info("deleteDocument: I've been hit by {}!\nDocumentId: {}", auth.getName(), documentId);
         return ResponseEntity.noContent().build();
     }
 }
