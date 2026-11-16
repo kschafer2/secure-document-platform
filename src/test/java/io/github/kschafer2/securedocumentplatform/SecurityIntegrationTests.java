@@ -22,6 +22,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.util.List;
 
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,11 +65,12 @@ public class SecurityIntegrationTests {
         mockMvc.perform(get("/documents")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
         )
-                .andExpect(status().is(200));
+                .andExpect(status().is(200))
+                .andExpect(authenticated().withUsername("shrek"));
     }
 
     @Test
-    void missingJwtToken() throws Exception {
+    void missingJwtToken401() throws Exception {
         mockMvc.perform(get("/documents")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer ")
                 )
@@ -76,7 +78,7 @@ public class SecurityIntegrationTests {
     }
 
     @Test
-    void wrongAudienceJwtToken() throws Exception {
+    void wrongAudienceJwtToken401() throws Exception {
         JwtEncoder jwtEncoder = getJwtEncoder(publicKeyResource, privateKeyResource);
 
         Instant now = Instant.now();
@@ -98,7 +100,7 @@ public class SecurityIntegrationTests {
     }
 
     @Test
-    void invalidSignedJwtToken() throws Exception {
+    void invalidSignedJwtToken401() throws Exception {
         JwtEncoder jwtEncoder = getJwtEncoder(invalidPublicKeyResource, invalidPrivateKeyResource);
 
         Instant now = Instant.now();
@@ -120,7 +122,7 @@ public class SecurityIntegrationTests {
     }
 
     @Test
-    void expiredJwtToken() throws Exception {
+    void expiredJwtToken401() throws Exception {
         JwtEncoder jwtEncoder = getJwtEncoder(publicKeyResource, privateKeyResource);
 
         Instant now = Instant.now();

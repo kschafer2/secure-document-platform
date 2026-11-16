@@ -28,8 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>25</java.version>
-		<tomcat.version>11.0.26</tomcat.version>
 		<argLine></argLine>
+        <jackson-bom.version>3.1.8</jackson-bom.version>
+        <logback.version>1.6.7</logback.version>
 	</properties>
 	<dependencies>
 		<dependency>

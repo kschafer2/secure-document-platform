@@ -16,7 +16,7 @@ base64url() {
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
-PRIVATE_KEY="$REPO_ROOT/src/main/resources/dev/auth/dev-private-key.pem"
+PRIVATE_KEY="$REPO_ROOT/dev/auth/dev-private-key.pem"
 
 SUBJECT="${1:-}"
 LIFETIME="${2:-3600}"

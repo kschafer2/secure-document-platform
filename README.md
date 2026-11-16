@@ -577,6 +577,73 @@ curl -i \
 
 The development private key is intentionally committed for local use and must be treated as public test material. Any environment that trusts the corresponding public key is therefore development-only; never reuse this key pair for a deployed environment or real data.
 
+### Example API Requests
+
+For manual smoke testing, define the local base URL and generate a development token once:
+
+```bash
+BASE_URL="http://localhost:8080"
+TOKEN="$(./scripts/generate-dev-jwt.sh kyle)"
+```
+
+List documents:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $TOKEN" \
+  "$BASE_URL/documents"
+```
+
+Upload a document:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "file=@./dev/examples/example.txt" \
+  "$BASE_URL/documents"
+```
+
+For document-specific requests, set the document ID returned by the API:
+
+```bash
+DOCUMENT_ID="<document-id>"
+```
+
+Retrieve document metadata:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $TOKEN" \
+  "$BASE_URL/documents/$DOCUMENT_ID"
+```
+
+Download document content:
+
+```bash
+curl -i \
+  -H "Authorization: Bearer $TOKEN" \
+  "$BASE_URL/documents/$DOCUMENT_ID/content"
+```
+
+Delete a document:
+
+```bash
+curl -i \
+  -X DELETE \
+  -H "Authorization: Bearer $TOKEN" \
+  "$BASE_URL/documents/$DOCUMENT_ID"
+```
+
+Verify that authentication is required:
+
+```bash
+curl -i "$BASE_URL/documents"
+```
+
+The unauthenticated request should return `401 Unauthorized`.
+
+These commands are intended as convenient manual smoke tests. They do not replace the project's automated test suite.
+
 ### Stop Local Infrastructure
 
 Stop and remove the local containers:
