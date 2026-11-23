@@ -1,7 +1,11 @@
-package io.github.kschafer2.securedocumentplatform.controller;
+package io.github.kschafer2.securedocumentplatform.web.controller;
 
+import io.github.kschafer2.securedocumentplatform.application.upload.UploadContent;
 import io.github.kschafer2.securedocumentplatform.security.SecurityConfig;
+import io.github.kschafer2.securedocumentplatform.application.DocumentService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -16,6 +20,9 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.Matchers.matchesPattern;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -30,6 +37,9 @@ class DocumentControllerTest {
     @MockitoBean
     private JwtDecoder jwtDecoder;
 
+    @MockitoBean
+    private DocumentService documentService;
+
     @Test
     void uploadDocument() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
@@ -39,7 +49,13 @@ class DocumentControllerTest {
                 "file".getBytes()
         );
 
+        UUID documentId = UUID.randomUUID();
         String uuidPattern = Pattern.compile("[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$").pattern();
+
+        ArgumentCaptor<UploadContent> contentCaptor = ArgumentCaptor.forClass(UploadContent.class);
+
+        when(documentService.upload(any(), any()))
+                .thenReturn(documentId);
 
         mockMvc.perform(multipart("/documents")
                         .file(file)
@@ -47,7 +63,15 @@ class DocumentControllerTest {
                 )
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, matchesPattern("^/documents/" + uuidPattern)))
+                .andExpect(header().string(HttpHeaders.LOCATION, "/documents/" + documentId))
                 .andExpect(content().string(""));
+
+        verify(documentService).upload(any(), contentCaptor.capture());
+
+        UploadContent captured = contentCaptor.getValue();
+
+        Assertions.assertEquals(4, captured.fileSizeBytes());
+        Assertions.assertEquals("file.txt", captured.fileName());
     }
 
     @Test

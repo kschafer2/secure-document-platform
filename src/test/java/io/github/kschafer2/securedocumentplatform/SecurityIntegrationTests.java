@@ -1,6 +1,7 @@
 package io.github.kschafer2.securedocumentplatform;
 
-import io.github.kschafer2.securedocumentplatform.controller.DocumentController;
+import io.github.kschafer2.securedocumentplatform.application.DocumentService;
+import io.github.kschafer2.securedocumentplatform.web.controller.DocumentController;
 import io.github.kschafer2.securedocumentplatform.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -33,6 +35,9 @@ public class SecurityIntegrationTests {
 
     @Autowired
     MockMvc mockMvc;
+
+    @MockitoBean
+    DocumentService documentService;
 
     @Value("${test.jwt.private-key-location}")
     private Resource privateKeyResource;

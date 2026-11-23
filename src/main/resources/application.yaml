@@ -14,3 +14,7 @@ spring:
           public-key-location: classpath:dev/auth/dev-public-key.pem
           audiences:
             - secure-document-platform
+  servlet:
+    multipart:
+      max-file-size: 101MB
+      max-request-size: 102MB
