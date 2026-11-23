@@ -8,6 +8,8 @@
 - The API never accepts `owner_subject` or an equivalent owner identifier from the client.
 - For document-specific operations, a document that does not exist and a document owned by another user are both exposed as `404 Not Found`.
 - JSON is used for metadata responses.
+- Structured API errors use RFC 9457 Problem Details with `Content-Type: application/problem+json`.
+- Application-specific error identifiers are exposed through the Problem Details extension property `code`.
 - Raw file bytes are returned directly for document content downloads.
 - Object storage remains private and is not exposed directly to clients.
 
@@ -78,13 +80,16 @@ If the authenticated owner already has a document with the same case-sensitive f
 
 ```http
 HTTP/1.1 409 Conflict
-Content-Type: application/json
+Content-Type: application/problem+json
 ```
 
 ```json
 {
-  "code": "DOCUMENT_NAME_CONFLICT",
-  "message": "A document with this filename already exists."
+  "detail": "A document with this filename already exists.",
+  "instance": "/documents",
+  "status": 409,
+  "title": "Conflict",
+  "code": "DOCUMENT_NAME_CONFLICT"
 }
 ```
 
