@@ -70,8 +70,8 @@ class DocumentControllerTest {
 
         UploadContent captured = contentCaptor.getValue();
 
-        Assertions.assertEquals(4, captured.fileSizeBytes());
-        Assertions.assertEquals("file.txt", captured.fileName());
+        Assertions.assertEquals(4, captured.size());
+        Assertions.assertEquals("file.txt", captured.name());
     }
 
     @Test

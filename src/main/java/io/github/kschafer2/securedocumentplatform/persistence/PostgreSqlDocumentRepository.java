@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 public class PostgreSqlDocumentRepository implements DocumentRepository {
 
@@ -22,7 +24,7 @@ public class PostgreSqlDocumentRepository implements DocumentRepository {
     }
 
     @Override
-    public void saveDocument(NewDocument document) {
+    public void save(NewDocument document) {
         String sql =
                 """
                         INSERT INTO
@@ -73,8 +75,8 @@ public class PostgreSqlDocumentRepository implements DocumentRepository {
                             FROM
                               document
                             WHERE
-                              owner_subject =:ownerSubject
-                              AND file_name =:fileName
+                              owner_subject = :ownerSubject
+                              AND file_name = :fileName
                           );
                 """;
 
@@ -86,5 +88,24 @@ public class PostgreSqlDocumentRepository implements DocumentRepository {
                 .paramSource(mapSqlParameterSource)
                 .query(Boolean.class)
                 .single();
+    }
+
+    @Override
+    public void deleteByDocumentIdAndOwnerSubject(UUID documentId, String ownerSubject) {
+        String sql =
+                """
+                        DELETE FROM document
+                        WHERE
+                          document_id = :documentId
+                          AND owner_subject = :ownerSubject;
+                """;
+
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+                .addValue("documentId", documentId)
+                .addValue("ownerSubject", ownerSubject);
+
+        jdbcClient.sql(sql)
+                .paramSource(mapSqlParameterSource)
+                .update();
     }
 }

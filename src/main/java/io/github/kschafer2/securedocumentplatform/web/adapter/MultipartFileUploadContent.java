@@ -15,12 +15,12 @@ public class MultipartFileUploadContent implements UploadContent {
     }
 
     @Override
-    public String fileName() {
+    public String name() {
         return file.getOriginalFilename();
     }
 
     @Override
-    public long fileSizeBytes() {
+    public long size() {
         return file.getSize();
     }
 

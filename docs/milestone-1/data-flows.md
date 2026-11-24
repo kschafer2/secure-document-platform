@@ -252,7 +252,7 @@ If both the object-store write and compensating metadata deletion fail:
 ```text
 metadata exists
     ↓
-object content does not
+object content may or may not exist
     ↓
 compensating metadata delete fails
     ↓
@@ -261,7 +261,7 @@ stale metadata remains
 
 Milestone 1 accepts this state temporarily.
 
-A future reconciliation process may identify and remove stale metadata.
+A future reconciliation process may identify and remove stale metadata and orphaned content.
 
 The failure is returned to the caller.
 

@@ -5,9 +5,9 @@ import java.io.InputStream;
 
 public interface UploadContent {
 
-    String fileName();
+    String name();
 
-    long fileSizeBytes();
+    long size();
 
     /**
      * Opens a new stream over the complete content.

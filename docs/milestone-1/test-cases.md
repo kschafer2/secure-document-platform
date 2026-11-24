@@ -426,7 +426,7 @@ No extra production read is required solely to verify that the compensating dele
 **Then**
 - return `503 Service Unavailable`
 - the metadata row remains in PostgreSQL
-- no successfully stored object exists
+- the object may or may not exist in object storage
 - record/log the compensation failure so the inconsistency can be identified later
 
 ### Known Milestone 1 Consequence
